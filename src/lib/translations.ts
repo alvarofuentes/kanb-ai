@@ -120,7 +120,7 @@ export const translations = {
     spanish: 'Español',
 
     // Footer
-    copyright: '© 2024 Kan-B AI. Voice-powered productivity.',
+    copyright: '© 2026 Kan-B AI. Voice-powered productivity.',
     aiReady: 'AI Ready',
     aiPowered: 'AI Powered',
 
@@ -248,7 +248,7 @@ export const translations = {
     spanish: 'Español',
 
     // Footer
-    copyright: '© 2024 Kan-B AI. Productividad potenciada por voz.',
+    copyright: '© 2026 Kan-B AI. Productividad potenciada por voz.',
     aiReady: 'IA Lista',
     aiPowered: 'Potenciado por IA',
 
