@@ -46,8 +46,8 @@ export function KanbanColumn({ status, title, tasks, colorClass }: KanbanColumnP
             strategy={verticalListSortingStrategy}
           >
             <div className="space-y-2 p-1">
-              {tasks.map((task) => (
-                <TaskCard key={task.id} task={task} />
+              {tasks.map((task, index) => (
+                <TaskCard key={task.id} task={task} isCompact={index >= 2} />
               ))}
               {tasks.length === 0 && (
                 <div className="flex h-24 items-center justify-center rounded-lg border-2 border-dashed text-sm text-muted-foreground">

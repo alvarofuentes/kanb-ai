@@ -52,9 +52,10 @@ import { format } from 'date-fns';
 interface TaskCardProps {
   task: Task;
   isDragging?: boolean;
+  isCompact?: boolean;
 }
 
-export function TaskCard({ task, isDragging }: TaskCardProps) {
+export function TaskCard({ task, isDragging, isCompact }: TaskCardProps) {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editedTitle, setEditedTitle] = useState(task.title);
   const [editedDescription, setEditedDescription] = useState(task.description || '');
@@ -156,7 +157,7 @@ export function TaskCard({ task, isDragging }: TaskCardProps) {
           isOverdue && 'border-red-500/50 bg-red-50/50 dark:bg-red-950/30'
         )}
       >
-        <CardContent className="p-3">
+        <CardContent className={cn("p-3", isCompact && "p-2")}>
           <div className="flex items-start gap-2">
             <button
               {...attributes}
@@ -218,55 +219,57 @@ export function TaskCard({ task, isDragging }: TaskCardProps) {
                 </DropdownMenu>
               </div>
 
-              {task.description && (
+              {!isCompact && task.description && (
                 <p className="text-xs text-muted-foreground whitespace-pre-wrap">
                   {task.description}
                 </p>
               )}
 
-              <div className="flex flex-wrap items-center gap-1.5">
-                <Badge
-                  variant="outline"
-                  className={cn(
-                    'text-[10px] px-1.5 py-0',
-                    task.priority === 'URGENT' && 'text-red-600',
-                    task.priority === 'HIGH' && 'text-orange-600',
-                    task.priority === 'MEDIUM' && 'text-amber-600',
-                    task.priority === 'LOW' && 'text-slate-600'
-                  )}
-                >
-                  {priorityLabels[task.priority]}
-                </Badge>
+              {!isCompact && (
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <Badge
+                    variant="outline"
+                    className={cn(
+                      'text-[10px] px-1.5 py-0',
+                      task.priority === 'URGENT' && 'text-red-600',
+                      task.priority === 'HIGH' && 'text-orange-600',
+                      task.priority === 'MEDIUM' && 'text-amber-600',
+                      task.priority === 'LOW' && 'text-slate-600'
+                    )}
+                  >
+                    {priorityLabels[task.priority]}
+                  </Badge>
 
-                {task.dueDate && (
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className={cn(
-                          'h-5 px-1.5 text-[10px]',
-                          isOverdue && 'text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300'
-                        )}
-                      >
-                        {isOverdue ? (
-                          <AlertTriangle className="mr-1 h-3 w-3" />
-                        ) : (
-                          <CalendarIcon className="mr-1 h-3 w-3" />
-                        )}
-                        {format(new Date(task.dueDate), 'MMM d')}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={task.dueDate ? new Date(task.dueDate) : undefined}
-                        disabled
-                      />
-                    </PopoverContent>
-                  </Popover>
-                )}
-              </div>
+                  {task.dueDate && (
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className={cn(
+                            'h-5 px-1.5 text-[10px]',
+                            isOverdue && 'text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300'
+                          )}
+                        >
+                          {isOverdue ? (
+                            <AlertTriangle className="mr-1 h-3 w-3" />
+                          ) : (
+                            <CalendarIcon className="mr-1 h-3 w-3" />
+                          )}
+                          {format(new Date(task.dueDate), 'MMM d')}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={task.dueDate ? new Date(task.dueDate) : undefined}
+                          disabled
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </CardContent>
