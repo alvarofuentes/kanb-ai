@@ -19,7 +19,7 @@
 
 - **🎙️ Grabación de voz** - Transcripción automática vinculada al idioma activo de la interfaz (ES/EN/ZH) evitando traducciones forzadas
 - **🤖 Extracción de tareas con IA** - Convierte texto hablado en tareas estructuradas
-- **📋 Tablero Kanban Avanzado** - Arrastra y suelta tareas libremente entre diferentes columnas o reordénalas internamente con total precisión
+- **📋 Tablero Kanban Avanzado** - Arrastra y suelta tareas libremente, reordénalas internamente con precisión y disfruta de una vista compacta automática para columnas con muchas tareas
 - **📊 Dashboard de productividad** - Visualiza tu progreso con gráficos
 - **🌙 Diseño Adaptativo y Modo Oscuro** - Interfaz fluida con contraste optimizado para la vista
 - **🌍 Multiidioma** - Interfaz en español e inglés
