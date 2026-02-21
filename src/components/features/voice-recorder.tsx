@@ -35,9 +35,9 @@ interface VoiceRecorderProps {
 interface AIConfigError {
   errorType: string;
   hint: string;
-  providers?: Record<string, { 
+  providers?: Record<string, {
     name?: string;
-    envVar: string; 
+    envVar: string;
     signupUrl: string;
     supportsTranscription?: boolean;
     free?: boolean;
@@ -102,7 +102,7 @@ export function VoiceRecorder({ onTasksExtracted }: VoiceRecorderProps) {
 
   // Check if transcription is available
   const hasTranscription = aiStatus?.configured === true;
-  
+
   // Check if chat/extraction is available
   const hasChatProvider = aiStatus?.chatConfigured === true || (aiStatus?.allConfigured && aiStatus.allConfigured.length > 0);
   const chatProviderName = aiStatus?.providers?.find(p => p.supportsChat)?.name || aiStatus?.chatProvider;
@@ -120,29 +120,29 @@ export function VoiceRecorder({ onTasksExtracted }: VoiceRecorderProps) {
 
   const startRecording = useCallback(async () => {
     if (!hasTranscription) {
-      setError(language === 'en' 
-        ? 'Audio transcription not available. Please use text input below.' 
+      setError(language === 'en'
+        ? 'Audio transcription not available. Please use text input below.'
         : 'Transcripción de audio no disponible. Por favor usa el ingreso de texto abajo.');
       return;
     }
-    
+
     try {
       resetState();
       setError(null);
-      
-      const stream = await navigator.mediaDevices.getUserMedia({ 
+
+      const stream = await navigator.mediaDevices.getUserMedia({
         audio: {
           echoCancellation: true,
           noiseSuppression: true,
           sampleRate: 44100,
-        } 
+        }
       });
       streamRef.current = stream;
 
-      const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus') 
-        ? 'audio/webm;codecs=opus' 
-        : MediaRecorder.isTypeSupported('audio/webm') 
-          ? 'audio/webm' 
+      const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+        ? 'audio/webm;codecs=opus'
+        : MediaRecorder.isTypeSupported('audio/webm')
+          ? 'audio/webm'
           : 'audio/mp4';
 
       const mediaRecorder = new MediaRecorder(stream, { mimeType });
@@ -298,7 +298,7 @@ export function VoiceRecorder({ onTasksExtracted }: VoiceRecorderProps) {
               {t.voiceRecordingTitle}
             </CardTitle>
             <CardDescription>
-              {t.voiceRecordingDesc}
+              {t.voiceRecordingInstruction}
             </CardDescription>
           </div>
           {(audioBlob || transcription || extractedTasks.length > 0) && (
@@ -318,8 +318,8 @@ export function VoiceRecorder({ onTasksExtracted }: VoiceRecorderProps) {
               <div className="flex items-center gap-2 text-sm p-2 rounded-md bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-400">
                 <CheckCircle2 className="h-4 w-4" />
                 <span>
-                  {language === 'en' 
-                    ? `Task extraction: ${chatProviderName || 'AI Provider'} connected` 
+                  {language === 'en'
+                    ? `Task extraction: ${chatProviderName || 'AI Provider'} connected`
                     : `Extracción de tareas: ${chatProviderName || 'Proveedor IA'} conectado`}
                 </span>
               </div>
@@ -327,20 +327,20 @@ export function VoiceRecorder({ onTasksExtracted }: VoiceRecorderProps) {
               <div className="flex items-center gap-2 text-sm p-2 rounded-md bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-400">
                 <AlertCircle className="h-4 w-4" />
                 <span>
-                  {language === 'en' 
-                    ? 'No task extraction provider configured' 
+                  {language === 'en'
+                    ? 'No task extraction provider configured'
                     : 'Sin proveedor de extracción de tareas'}
                 </span>
               </div>
             )}
-            
+
             {/* Transcription Status */}
             {hasTranscription ? (
               <div className="flex items-center gap-2 text-sm p-2 rounded-md bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-400">
                 <CheckCircle2 className="h-4 w-4" />
                 <span>
-                  {language === 'en' 
-                    ? `Voice transcription: ${aiStatus.provider?.toUpperCase()} connected` 
+                  {language === 'en'
+                    ? `Voice transcription: ${aiStatus.provider?.toUpperCase()} connected`
                     : `Transcripción de voz: ${aiStatus.provider?.toUpperCase()} conectado`}
                 </span>
               </div>
@@ -348,8 +348,8 @@ export function VoiceRecorder({ onTasksExtracted }: VoiceRecorderProps) {
               <div className="flex items-center gap-2 text-sm p-2 rounded-md bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-400">
                 <MicOff className="h-4 w-4" />
                 <span>
-                  {language === 'en' 
-                    ? 'Voice transcription not available - Use text input below' 
+                  {language === 'en'
+                    ? 'Voice transcription not available - Use text input below'
                     : 'Transcripción de voz no disponible - Usa el ingreso de texto abajo'}
                 </span>
               </div>
@@ -369,14 +369,14 @@ export function VoiceRecorder({ onTasksExtracted }: VoiceRecorderProps) {
                   <p className="font-medium">{language === 'en' ? 'Get your API key:' : 'Obtén tu API key:'}</p>
                   <div className="flex flex-wrap gap-2">
                     {Object.entries(configError.providers).map(([key, provider]) => (
-                      <a 
+                      <a
                         key={key}
                         href={provider.signupUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1 text-sm underline"
                       >
-                        {provider.name || key} 
+                        {provider.name || key}
                         {provider.free && <span className="text-green-600">({language === 'en' ? 'Free!' : '¡Gratis!'})</span>}
                         <ExternalLink className="h-3 w-3" />
                       </a>
@@ -450,9 +450,9 @@ export function VoiceRecorder({ onTasksExtracted }: VoiceRecorderProps) {
               <span className="text-sm">{error}</span>
             </div>
             {audioBlob && (
-              <Button 
-                variant="ghost" 
-                size="sm" 
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={() => transcribeAudio()}
                 disabled={isTranscribing}
                 className="shrink-0"

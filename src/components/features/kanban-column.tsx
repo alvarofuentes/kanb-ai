@@ -27,7 +27,7 @@ export function KanbanColumn({ status, title, tasks, colorClass }: KanbanColumnP
     <Card
       ref={setNodeRef}
       className={cn(
-        'w-[250px] shrink-0 transition-colors flex flex-col whitespace-normal',
+        'w-[250px] shrink-0 transition-colors flex flex-col whitespace-normal bg-[#fdfbf7] dark:bg-card',
         isOver && 'ring-2 ring-primary ring-offset-2'
       )}
     >

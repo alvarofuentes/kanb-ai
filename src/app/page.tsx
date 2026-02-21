@@ -10,6 +10,17 @@ import { AddTaskDialog } from '@/components/features/add-task-dialog';
 import { AuthDialog } from '@/components/features/auth-dialog';
 import { UserMenu } from '@/components/features/user-menu';
 import { LanguageSelector } from '@/components/features/language-selector';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { useTaskStore } from '@/store/task-store';
 import { useAuth } from '@/context/auth-context';
 import { useLanguage } from '@/context/language-context';
@@ -23,12 +34,13 @@ import {
   Sparkles,
   Loader2,
   LogIn,
+  Trash2,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export default function HomePage() {
   const [activeTab, setActiveTab] = useState('voice');
-  const { fetchTasks, fetchStats, isLoading } = useTaskStore();
+  const { fetchTasks, fetchStats, isLoading, clearAllTasks } = useTaskStore();
   const { user, isLoading: authLoading, isAuthenticated, logout } = useAuth();
   const { t } = useLanguage();
   const [taskCreated, setTaskCreated] = useState(false);
@@ -52,6 +64,12 @@ export default function HomePage() {
   const handleRefresh = async () => {
     if (user) {
       await Promise.all([fetchTasks(user.id), fetchStats(user.id)]);
+    }
+  };
+
+  const handleClearBoard = async () => {
+    if (user) {
+      await clearAllTasks(user.id);
     }
   };
 
@@ -146,8 +164,8 @@ export default function HomePage() {
               </div>
             </div>
 
-            <Button 
-              size="lg" 
+            <Button
+              size="lg"
               onClick={() => setShowAuthDialog(true)}
               className="gap-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-lg px-8 py-6"
             >
@@ -213,6 +231,36 @@ export default function HomePage() {
                 />
                 {t.refresh}
               </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    disabled={isLoading}
+                    className="gap-2"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                    {t.clearBoard || 'Clear Board'}
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>{t.clearBoardTitle || 'Are you absolutely sure?'}</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      {t.clearBoardDesc || 'This action cannot be undone. This will permanently delete your entire task pipeline from the servers.'}
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>{t.cancel || 'Cancel'}</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={handleClearBoard}
+                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    >
+                      {t.continue || 'Continue'}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
               <LanguageSelector />
               <ThemeToggle />
               <UserMenu onLogout={handleLogout} />

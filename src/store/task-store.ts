@@ -25,6 +25,7 @@ interface TaskStore {
   updateTaskPriority: (id: string, priority: TaskPriority) => Promise<void>;
   deleteTask: (id: string) => Promise<void>;
   fetchStats: (userId?: string) => Promise<void>;
+  clearAllTasks: (userId: string) => Promise<void>;
 }
 
 export const useTaskStore = create<TaskStore>((set, get) => ({
@@ -157,6 +158,23 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
     } catch (error) {
       set({
         error: error instanceof Error ? error.message : 'Failed to fetch stats',
+      });
+    }
+  },
+
+  clearAllTasks: async (userId) => {
+    try {
+      const response = await fetch(`/api/tasks/clear?userId=${userId}`, {
+        method: 'DELETE',
+      });
+      const data = await response.json();
+      if (data.success) {
+        set({ tasks: [] });
+        get().fetchStats(userId); // Recargar stats vacíos
+      }
+    } catch (error) {
+      set({
+        error: error instanceof Error ? error.message : 'Failed to clear tasks',
       });
     }
   },

@@ -151,7 +151,7 @@ export function TaskCard({ task, isDragging }: TaskCardProps) {
         ref={setNodeRef}
         style={style}
         className={cn(
-          'cursor-grab transition-shadow hover:shadow-md w-full',
+          'cursor-grab transition-shadow hover:shadow-md w-full bg-[#fdfbf7] dark:bg-card',
           isSortableDragging && 'opacity-50',
           isOverdue && 'border-red-500/50 bg-red-50/50 dark:bg-red-950/30'
         )}

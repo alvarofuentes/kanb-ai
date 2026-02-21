@@ -6,11 +6,15 @@ export const translations = {
     appName: 'Kan-B AI',
     appTagline: 'Voice-powered task management',
     appDescription: 'Create tasks using voice commands with AI-powered transcription and smart task extraction. Manage your workflow with an intuitive Kanban board.',
-    
+
     // Auth
     signIn: 'Sign In',
     signUp: 'Sign Up',
     signOut: 'Log out',
+    clearBoard: 'Clear Board',
+    clearBoardTitle: 'Are you absolutely sure?',
+    clearBoardDesc: 'This action cannot be undone. This will permanently delete your entire task pipeline from the servers.',
+    continue: 'Continue',
     email: 'Email',
     password: 'Password',
     confirmPassword: 'Confirm Password',
@@ -19,7 +23,7 @@ export const translations = {
     signingIn: 'Signing in...',
     creatingAccount: 'Creating account...',
     welcomeBack: 'Welcome back',
-    
+
     // Landing page
     manageTasksWithVoice: 'Manage Tasks with Your Voice',
     landingDescription: 'Simply speak your thoughts, and our AI will automatically transcribe and convert them into actionable tasks. Organize with our intuitive Kanban board and track your productivity.',
@@ -30,7 +34,7 @@ export const translations = {
     kanbanBoard: 'Kanban Board',
     kanbanBoardDesc: 'Drag and drop tasks across columns to manage your workflow visually.',
     getStarted: 'Get Started',
-    
+
     // Navigation
     voice: 'Voice',
     voiceInput: 'Voice Input',
@@ -40,10 +44,10 @@ export const translations = {
     stats: 'Stats',
     refresh: 'Refresh',
     addTask: 'Add Task',
-    
+
     // Voice Recorder
     voiceRecordingTitle: 'Voice Recording & Transcription',
-    voiceRecordingDesc: 'Record your voice or type to create tasks automatically',
+    voiceRecordingInstruction: 'Record your voice or type to create tasks automatically',
     recording: 'Recording... Speak now',
     transcribe: 'Transcribe',
     transcribing: 'Transcribing...',
@@ -58,7 +62,7 @@ export const translations = {
     clear: 'Clear',
     retry: 'Retry',
     failedToAccessMicrophone: 'Failed to access microphone. Please grant permission and try again.',
-    
+
     // Kanban
     open: 'Open',
     pending: 'Pending',
@@ -66,7 +70,7 @@ export const translations = {
     review: 'Review',
     completed: 'Completed',
     dropTasksHere: 'Drop tasks here',
-    
+
     // Task Card
     edit: 'Edit',
     delete: 'Delete',
@@ -75,7 +79,7 @@ export const translations = {
     medium: 'Medium',
     high: 'High',
     urgent: 'Urgent',
-    
+
     // Add Task Dialog
     createNewTask: 'Create New Task',
     addTaskDescription: 'Add a new task to your board. Fill in the details below.',
@@ -89,7 +93,7 @@ export const translations = {
     cancel: 'Cancel',
     create: 'Create Task',
     creating: 'Creating...',
-    
+
     // Dashboard
     totalTasks: 'Total Tasks',
     allTasksInWorkspace: 'All tasks in workspace',
@@ -108,18 +112,18 @@ export const translations = {
     tasksDue: 'tasks due',
     inProgressActive: 'active',
     inReviewPending: 'pending',
-    
+
     // Language Selection
     selectLanguage: 'Select Language',
     language: 'Language',
     english: 'English',
     spanish: 'Español',
-    
+
     // Footer
     copyright: '© 2024 Kan-B AI. Voice-powered productivity.',
     aiReady: 'AI Ready',
     aiPowered: 'AI Powered',
-    
+
     // Misc
     loading: 'Loading...',
     profile: 'Profile',
@@ -130,11 +134,15 @@ export const translations = {
     appName: 'Kan-B AI',
     appTagline: 'Gestión de tareas por voz',
     appDescription: 'Crea tareas usando comandos de voz con transcripción potenciada por IA y extracción inteligente de tareas. Gestiona tu flujo de trabajo con un tablero Kanban intuitivo.',
-    
+
     // Auth
     signIn: 'Iniciar sesión',
     signUp: 'Registrarse',
     signOut: 'Cerrar sesión',
+    clearBoard: 'Limpiar Tablero',
+    clearBoardTitle: '¿Estás completamente seguro?',
+    clearBoardDesc: 'Esta acción no se puede deshacer. Se eliminarán para siempre todas las tareas actuales del tablero desde la base de datos.',
+    continue: 'Continuar',
     email: 'Correo electrónico',
     password: 'Contraseña',
     confirmPassword: 'Confirmar contraseña',
@@ -143,7 +151,7 @@ export const translations = {
     signingIn: 'Iniciando sesión...',
     creatingAccount: 'Creando cuenta...',
     welcomeBack: 'Bienvenido de nuevo',
-    
+
     // Landing page
     manageTasksWithVoice: 'Gestiona Tareas con Tu Voz',
     landingDescription: 'Simplemente habla tus pensamientos, y nuestra IA transcribirá automáticamente y los convertirá en tareas accionables. Organiza con nuestro tablero Kanban intuitivo y rastrea tu productividad.',
@@ -154,7 +162,7 @@ export const translations = {
     kanbanBoard: 'Tablero Kanban',
     kanbanBoardDesc: 'Arrastra y suelta tareas entre columnas para gestionar tu flujo de trabajo visualmente.',
     getStarted: 'Comenzar',
-    
+
     // Navigation
     voice: 'Voz',
     voiceInput: 'Entrada de Voz',
@@ -164,10 +172,10 @@ export const translations = {
     stats: 'Estadísticas',
     refresh: 'Actualizar',
     addTask: 'Agregar Tarea',
-    
+
     // Voice Recorder
     voiceRecordingTitle: 'Grabación de Voz y Transcripción',
-    voiceRecordingDesc: 'Graba tu voz o escribe para crear tareas automáticamente',
+    voiceRecordingInstruction: 'Graba tu voz o escribe para crear tareas automáticamente',
     recording: 'Grabando... Habla ahora',
     transcribe: 'Transcribir',
     transcribing: 'Transcribiendo...',
@@ -182,7 +190,7 @@ export const translations = {
     clear: 'Limpiar',
     retry: 'Reintentar',
     failedToAccessMicrophone: 'No se pudo acceder al micrófono. Por favor, concede permiso e inténtalo de nuevo.',
-    
+
     // Kanban
     open: 'Abierto',
     pending: 'Pendiente',
@@ -190,7 +198,7 @@ export const translations = {
     review: 'Revisión',
     completed: 'Completado',
     dropTasksHere: 'Suelta tareas aquí',
-    
+
     // Task Card
     edit: 'Editar',
     delete: 'Eliminar',
@@ -199,7 +207,7 @@ export const translations = {
     medium: 'Media',
     high: 'Alta',
     urgent: 'Urgente',
-    
+
     // Add Task Dialog
     createNewTask: 'Crear Nueva Tarea',
     addTaskDescription: 'Agrega una nueva tarea a tu tablero. Completa los detalles a continuación.',
@@ -213,7 +221,7 @@ export const translations = {
     cancel: 'Cancelar',
     create: 'Crear Tarea',
     creating: 'Creando...',
-    
+
     // Dashboard
     totalTasks: 'Total de Tareas',
     allTasksInWorkspace: 'Todas las tareas en el espacio',
@@ -232,18 +240,18 @@ export const translations = {
     tasksDue: 'tareas pendientes',
     inProgressActive: 'activas',
     inReviewPending: 'pendientes',
-    
+
     // Language Selection
     selectLanguage: 'Seleccionar Idioma',
     language: 'Idioma',
     english: 'English',
     spanish: 'Español',
-    
+
     // Footer
     copyright: '© 2024 Kan-B AI. Productividad potenciada por voz.',
     aiReady: 'IA Lista',
     aiPowered: 'Potenciado por IA',
-    
+
     // Misc
     loading: 'Cargando...',
     profile: 'Perfil',
