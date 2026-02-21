@@ -26,6 +26,7 @@ interface TaskStore {
   deleteTask: (id: string) => Promise<void>;
   fetchStats: (userId?: string) => Promise<void>;
   clearAllTasks: (userId: string) => Promise<void>;
+  reorderTasks: (updates: { id: string; order: number }[]) => Promise<void>;
 }
 
 export const useTaskStore = create<TaskStore>((set, get) => ({
@@ -176,6 +177,31 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
       set({
         error: error instanceof Error ? error.message : 'Failed to clear tasks',
       });
+    }
+  },
+
+  reorderTasks: async (updates) => {
+    // Optimistic update
+    set((state) => {
+      const updatedTasks = [...state.tasks];
+      for (const update of updates) {
+        const index = updatedTasks.findIndex((t) => t.id === update.id);
+        if (index !== -1) {
+          updatedTasks[index] = { ...updatedTasks[index], order: update.order };
+        }
+      }
+      return { tasks: updatedTasks.sort((a, b) => a.order - b.order) };
+    });
+
+    try {
+      await fetch('/api/tasks/reorder', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ updates }),
+      });
+    } catch (error) {
+      console.error('Failed to persist task reorder via API:', error);
+      // Depending on requirements we might want to reload tasks here if it fails
     }
   },
 }));

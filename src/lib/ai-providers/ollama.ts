@@ -27,7 +27,7 @@ export class OllamaProvider implements AIProvider {
     });
   }
 
-  async transcribe(audioBase64: string): Promise<TranscriptionResult> {
+  async transcribe(audioBase64: string, expectedLanguage?: string): Promise<TranscriptionResult> {
     try {
       // Convert base64 to buffer
       const buffer = Buffer.from(audioBase64, 'base64');
@@ -40,6 +40,7 @@ export class OllamaProvider implements AIProvider {
         file: file,
         model: this.whisperModel,
         response_format: 'json' as any,
+        language: expectedLanguage,
       });
 
       const text = response.text;

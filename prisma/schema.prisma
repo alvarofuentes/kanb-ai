@@ -42,6 +42,7 @@ model Task {
   description String?
   status      TaskStatus   @default(OPEN)
   priority    TaskPriority @default(MEDIUM)
+  order       Float        @default(0)
   dueDate     DateTime?
   tags        String?      // JSON array of tags
   userId      String

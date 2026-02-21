@@ -17,9 +17,9 @@
 
 ## 🚀 Características
 
-- **🎙️ Grabación de voz** - Transcripción automática con detección de idioma (ES/EN/ZH)
+- **🎙️ Grabación de voz** - Transcripción automática vinculada al idioma activo de la interfaz (ES/EN/ZH) evitando traducciones forzadas
 - **🤖 Extracción de tareas con IA** - Convierte texto hablado en tareas estructuradas
-- **📋 Tablero Kanban** - Arrastra y suelta tareas entre columnas
+- **📋 Tablero Kanban Avanzado** - Arrastra y suelta tareas libremente entre diferentes columnas o reordénalas internamente con total precisión
 - **📊 Dashboard de productividad** - Visualiza tu progreso con gráficos
 - **🌙 Diseño Adaptativo y Modo Oscuro** - Interfaz fluida con contraste optimizado para la vista
 - **🌍 Multiidioma** - Interfaz en español e inglés

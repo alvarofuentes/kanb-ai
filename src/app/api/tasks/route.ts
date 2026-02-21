@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
 
     const tasks = await db.task.findMany({
       where,
-      orderBy: [{ priority: 'desc' }, { createdAt: 'desc' }],
+      orderBy: [{ order: 'asc' }, { priority: 'desc' }, { createdAt: 'desc' }],
     });
 
     return NextResponse.json({ success: true, tasks });

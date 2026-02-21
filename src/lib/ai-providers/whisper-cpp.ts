@@ -27,7 +27,7 @@ export class WhisperCppProvider implements AIProvider {
     this.config = { ...DEFAULT_CONFIG, ...config };
   }
 
-  async transcribe(audioBase64: string): Promise<TranscriptionResult> {
+  async transcribe(audioBase64: string, expectedLanguage?: string): Promise<TranscriptionResult> {
     const tempFile = join(tmpdir(), `audio_${Date.now()}.wav`);
 
     try {
@@ -40,10 +40,17 @@ export class WhisperCppProvider implements AIProvider {
       console.log('Converting audio to 16kHz WAV...');
       await execAsync(`ffmpeg -i "${rawFile}" -ar 16000 -ac 1 -c:a pcm_s16le "${tempFile}"`);
 
-      // 2. Detect language or use Spanish as default
-      // We'll try Spanish first, then English if needed
+      // 2. Detect language or use Spanish as default (unless expectedLanguage is provided)
       let model = this.config.modelEs;
-      let language = 'es';
+      let language = 'auto'; // Default to auto-detect if possible
+
+      if (expectedLanguage === 'en') {
+        model = this.config.modelEn;
+        language = 'en';
+      } else if (expectedLanguage === 'es') {
+        model = this.config.modelEs;
+        language = 'es';
+      }
 
       // 3. Run whisper-cli
       const command = `"${this.config.binaryPath}" -m "${model}" -l ${language} -f "${tempFile}" --output-txt --output-file "${tempFile}"`;
@@ -53,12 +60,16 @@ export class WhisperCppProvider implements AIProvider {
       try {
         await execAsync(command, { timeout: 60000 });
       } catch (execError) {
-        // If Spanish fails, try English
-        console.log('Trying English model...');
-        model = this.config.modelEn;
-        language = 'en';
-        const enCommand = `"${this.config.binaryPath}" -m "${model}" -l auto -f "${tempFile}" --output-txt --output-file "${tempFile}"`;
-        await execAsync(enCommand, { timeout: 60000 });
+        // If it fails and we weren't forcing English, try the English model as fallback
+        if (expectedLanguage !== 'en') {
+          console.log('Trying English model...');
+          model = this.config.modelEn;
+          language = 'en';
+          const enCommand = `"${this.config.binaryPath}" -m "${model}" -l auto -f "${tempFile}" --output-txt --output-file "${tempFile}"`;
+          await execAsync(enCommand, { timeout: 60000 });
+        } else {
+          throw execError;
+        }
       }
 
       // 4. Read the output file

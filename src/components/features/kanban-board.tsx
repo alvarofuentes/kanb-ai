@@ -16,6 +16,7 @@ import {
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
+  arrayMove,
 } from '@dnd-kit/sortable';
 import { useTaskStore } from '@/store/task-store';
 import { Task, TaskStatus } from '@/types/task';
@@ -28,7 +29,7 @@ import { useLanguage } from '@/context/language-context';
 const COLUMNS: TaskStatus[] = ['OPEN', 'PENDING', 'IN_PROGRESS', 'REVIEW', 'COMPLETED'];
 
 export function KanbanBoard() {
-  const { tasks, isLoading, error, updateTaskStatus } = useTaskStore();
+  const { tasks, isLoading, error, updateTaskStatus, reorderTasks } = useTaskStore();
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const { t } = useLanguage();
 
@@ -69,25 +70,80 @@ export function KanbanBoard() {
       const activeId = active.id as string;
       const overId = over.id as string;
 
-      const targetColumn = COLUMNS.find((col) => col === overId);
+      if (activeId === overId) return;
 
-      if (targetColumn) {
-        const task = tasks.find((t) => t.id === activeId);
-        if (task && task.status !== targetColumn) {
-          updateTaskStatus(activeId, targetColumn);
+      const activeTask = tasks.find((t) => t.id === activeId);
+      if (!activeTask) return;
+
+      const isTargetColumn = COLUMNS.includes(overId as TaskStatus);
+      const overTask = tasks.find((t) => t.id === overId);
+
+      const targetStatus = isTargetColumn
+        ? (overId as TaskStatus)
+        : overTask?.status || activeTask.status;
+
+      const targetTasks = tasks
+        .filter((t) => t.status === targetStatus)
+        .sort((a, b) => (a.order || 0) - (b.order || 0));
+
+      const activeIndex = targetTasks.findIndex((t) => t.id === activeId);
+      let overIndex = targetTasks.findIndex((t) => t.id === overId);
+
+      // If dropped on the column rather than an item, append to the end
+      if (isTargetColumn || overIndex === -1) {
+        overIndex = targetTasks.length;
+      }
+
+      let newTasksArray = [...targetTasks];
+
+      if (activeTask.status !== targetStatus) {
+        // Different column: insert the item at overIndex
+        const updatedTask = { ...activeTask, status: targetStatus, order: activeTask.order || 0 };
+        // If appending exactly to the end, just push
+        if (overIndex >= newTasksArray.length) {
+          newTasksArray.push(updatedTask);
+        } else {
+          newTasksArray.splice(overIndex, 0, updatedTask);
         }
       } else {
-        const overTask = tasks.find((t) => t.id === overId);
-        if (overTask && activeTask && activeTask.status !== overTask.status) {
-          updateTaskStatus(activeId, overTask.status);
+        // Same column: move existing item
+        if (activeIndex !== -1) {
+          newTasksArray = arrayMove(newTasksArray, activeIndex, overIndex);
         }
       }
+
+      const newIndex = newTasksArray.findIndex((t) => t.id === activeId);
+      if (newIndex === -1) return;
+
+      const prevTask = newTasksArray[newIndex - 1];
+      const nextTask = newTasksArray[newIndex + 1];
+
+      let newOrder = 0;
+      if (!prevTask && !nextTask) {
+        newOrder = 0; // Only item
+      } else if (!prevTask) {
+        newOrder = (nextTask.order || 0) - 1; // Inserted at start
+      } else if (!nextTask) {
+        newOrder = (prevTask.order || 0) + 1; // Inserted at end
+      } else {
+        newOrder = ((prevTask.order || 0) + (nextTask.order || 0)) / 2; // Inserted in middle
+      }
+
+      const updates = [{ id: activeId, order: newOrder }];
+
+      if (activeTask.status !== targetStatus) {
+        updateTaskStatus(activeId, targetStatus);
+      }
+      reorderTasks(updates);
     },
-    [tasks, activeTask, updateTaskStatus]
+    [tasks, updateTaskStatus, reorderTasks]
   );
 
   const getTasksByStatus = useCallback(
-    (status: TaskStatus) => tasks.filter((task) => task.status === status),
+    (status: TaskStatus) =>
+      tasks
+        .filter((task) => task.status === status)
+        .sort((a, b) => (a.order || 0) - (b.order || 0)),
     [tasks]
   );
 

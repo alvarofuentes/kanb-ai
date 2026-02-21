@@ -203,7 +203,7 @@ export function VoiceRecorder({ onTasksExtracted }: VoiceRecorderProps) {
       const response = await fetch('/api/transcribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ audioBase64: base64Audio }),
+        body: JSON.stringify({ audioBase64: base64Audio, language }),
       });
 
       const data = await response.json();

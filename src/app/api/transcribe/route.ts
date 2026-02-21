@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { 
-  createTranscriptionProvider, 
-  hasTranscriptionProvider, 
-  getTranscriptionProviderType, 
+import {
+  createTranscriptionProvider,
+  hasTranscriptionProvider,
+  getTranscriptionProviderType,
   hasChatProvider,
   getChatProviderType,
-  getConfiguredProviders, 
-  PROVIDER_CONFIGS 
+  getConfiguredProviders,
+  PROVIDER_CONFIGS
 } from '@/lib/ai-providers';
 
 // POST - Transcribe audio to text
@@ -15,8 +15,8 @@ export async function POST(request: NextRequest) {
     // Check if transcription provider is configured
     if (!hasTranscriptionProvider()) {
       return NextResponse.json(
-        { 
-          success: false, 
+        {
+          success: false,
           error: 'No transcription provider configured',
           errorType: 'MISSING_API_KEY',
           hint: 'Please configure a provider that supports transcription (OpenAI, Groq, Whisper.cpp, or Ollama)',
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { audioBase64 } = body;
+    const { audioBase64, language } = body;
 
     if (!audioBase64) {
       return NextResponse.json(
@@ -79,11 +79,11 @@ export async function POST(request: NextRequest) {
 
     // Create transcription provider
     const result = createTranscriptionProvider();
-    
+
     if (!result) {
       return NextResponse.json(
-        { 
-          success: false, 
+        {
+          success: false,
           error: 'Failed to initialize transcription provider',
           hint: 'Make sure you have OpenAI, Groq, Whisper.cpp, or Ollama configured',
         },
@@ -100,7 +100,7 @@ export async function POST(request: NextRequest) {
 
     while (retries > 0) {
       try {
-        transcriptionResult = await provider.transcribe(audioBase64);
+        transcriptionResult = await provider.transcribe(audioBase64, language);
         break;
       } catch (err) {
         lastError = err as Error;
@@ -114,11 +114,11 @@ export async function POST(request: NextRequest) {
 
     if (!transcriptionResult) {
       console.error('Transcription failed after retries:', lastError);
-      
+
       // Provide helpful error messages
       let errorMessage = lastError?.message || 'Transcription failed';
       let hint = '';
-      
+
       if (lastError?.message?.includes('Country, region, or territory not supported')) {
         errorMessage = 'Provider is not available in your region';
         hint = 'Try using Whisper.cpp (local) or Ollama instead';
@@ -129,10 +129,10 @@ export async function POST(request: NextRequest) {
           hint = 'Make sure whisper-cli is installed and models are downloaded';
         }
       }
-      
+
       return NextResponse.json(
-        { 
-          success: false, 
+        {
+          success: false,
           error: errorMessage,
           hint,
           provider: type,
@@ -178,8 +178,8 @@ export async function GET() {
       type: p,
       ...PROVIDER_CONFIGS[p],
     })),
-    hint: hasTranscription && hasChat 
-      ? undefined 
+    hint: hasTranscription && hasChat
+      ? undefined
       : 'Configure at least one transcription provider and one chat provider',
   });
 }

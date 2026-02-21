@@ -30,7 +30,7 @@ export interface TaskExtractionResult {
 }
 
 export interface AIProvider {
-  transcribe(audioBase64: string): Promise<TranscriptionResult>;
+  transcribe(audioBase64: string, language?: string): Promise<TranscriptionResult>;
   extractTasks(transcription: string, language: string): Promise<TaskExtractionResult>;
 }
 

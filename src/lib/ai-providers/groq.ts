@@ -12,7 +12,7 @@ export class GroqProvider implements AIProvider {
     this.model = model;
   }
 
-  async transcribe(audioBase64: string): Promise<TranscriptionResult> {
+  async transcribe(audioBase64: string, expectedLanguage?: string): Promise<TranscriptionResult> {
     // Convert base64 to buffer
     const buffer = Buffer.from(audioBase64, 'base64');
 
@@ -24,6 +24,7 @@ export class GroqProvider implements AIProvider {
       file: file,
       model: 'whisper-large-v3-turbo',
       response_format: 'json',
+      language: expectedLanguage,
     });
 
     const text = response.text;

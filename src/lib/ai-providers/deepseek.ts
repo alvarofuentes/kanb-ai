@@ -16,7 +16,7 @@ export class DeepSeekProvider implements AIProvider {
     this.model = model;
   }
 
-  async transcribe(audioBase64: string): Promise<TranscriptionResult> {
+  async transcribe(_audioBase64: string, _expectedLanguage?: string): Promise<TranscriptionResult> {
     // DeepSeek doesn't have a native transcription API like Whisper
     // We'll return an error indicating this limitation
     throw new Error(
