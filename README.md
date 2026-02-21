@@ -21,6 +21,7 @@
 - **🤖 Extracción de tareas con IA** - Convierte texto hablado en tareas estructuradas
 - **📋 Tablero Kanban** - Arrastra y suelta tareas entre columnas
 - **📊 Dashboard de productividad** - Visualiza tu progreso con gráficos
+- **🌙 Diseño Adaptativo y Modo Oscuro** - Interfaz fluida con contraste optimizado para la vista
 - **🌍 Multiidioma** - Interfaz en español e inglés
 - **🔐 Autenticación** - Sistema de usuarios seguro
 - **🔄 Múltiples proveedores de IA** - OpenAI, Groq, DeepSeek, Ollama
@@ -178,12 +179,12 @@ Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 
 ## 📊 Comparación de Proveedores
 
-| Proveedor | Transcripción | Chat | Precio | Disponibilidad |
-|-----------|--------------|------|--------|----------------|
-| Groq | ✅ Whisper | ✅ Llama 3.3 | Gratis tier | Global |
-| DeepSeek | ❌ | ✅ DeepSeek Chat | Muy barato | China ✅ |
-| Ollama | ✅ Whisper | ✅ Llama, Mistral... | Gratis | Local |
-| OpenAI | ✅ Whisper | ✅ GPT-4o-mini | Pay per use | Limitado |
+| Proveedor | Transcripción | Chat                | Precio      | Disponibilidad |
+| --------- | ------------- | ------------------- | ----------- | -------------- |
+| Groq      | ✅ Whisper     | ✅ Llama 3.3         | Gratis tier | Global         |
+| DeepSeek  | ❌             | ✅ DeepSeek Chat     | Muy barato  | China ✅        |
+| Ollama    | ✅ Whisper     | ✅ Llama, Mistral... | Gratis      | Local          |
+| OpenAI    | ✅ Whisper     | ✅ GPT-4o-mini       | Pay per use | Limitado       |
 
 ---
 
@@ -243,18 +244,18 @@ kanb-ai/
 
 ## 🛠️ Tecnologías
 
-| Categoría | Tecnología |
-|-----------|------------|
-| Framework | Next.js 16 (App Router) |
-| Lenguaje | TypeScript 5 |
-| Estilos | Tailwind CSS 4 |
-| UI | shadcn/ui |
-| Estado | Zustand |
-| Base de datos | SQLite + Prisma ORM |
-| Gráficos | Recharts |
-| Drag & Drop | @dnd-kit |
-| Auth | NextAuth.js |
-| IA | OpenAI / Groq / DeepSeek / Ollama |
+| Categoría     | Tecnología                        |
+| ------------- | --------------------------------- |
+| Framework     | Next.js 16 (App Router)           |
+| Lenguaje      | TypeScript 5                      |
+| Estilos       | Tailwind CSS 4                    |
+| UI            | shadcn/ui                         |
+| Estado        | Zustand                           |
+| Base de datos | SQLite + Prisma ORM               |
+| Gráficos      | Recharts                          |
+| Drag & Drop   | @dnd-kit                          |
+| Auth          | NextAuth.js                       |
+| IA            | OpenAI / Groq / DeepSeek / Ollama |
 
 ---
 

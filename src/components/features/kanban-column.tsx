@@ -27,7 +27,7 @@ export function KanbanColumn({ status, title, tasks, colorClass }: KanbanColumnP
     <Card
       ref={setNodeRef}
       className={cn(
-        'w-[300px] shrink-0 transition-colors',
+        'w-[250px] shrink-0 transition-colors flex flex-col whitespace-normal',
         isOver && 'ring-2 ring-primary ring-offset-2'
       )}
     >
@@ -39,13 +39,13 @@ export function KanbanColumn({ status, title, tasks, colorClass }: KanbanColumnP
           </Badge>
         </div>
       </CardHeader>
-      <CardContent className="p-2 pt-0">
+      <CardContent className="px-1 pt-0">
         <ScrollArea className="h-[calc(100vh-320px)] min-h-[400px]">
           <SortableContext
             items={tasks.map((t) => t.id)}
             strategy={verticalListSortingStrategy}
           >
-            <div className="space-y-2 p-2">
+            <div className="space-y-2 p-1">
               {tasks.map((task) => (
                 <TaskCard key={task.id} task={task} />
               ))}

@@ -151,9 +151,9 @@ export function TaskCard({ task, isDragging }: TaskCardProps) {
         ref={setNodeRef}
         style={style}
         className={cn(
-          'cursor-grab transition-shadow hover:shadow-md',
+          'cursor-grab transition-shadow hover:shadow-md w-full',
           isSortableDragging && 'opacity-50',
-          isOverdue && 'border-red-200 bg-red-50/50'
+          isOverdue && 'border-red-500/50 bg-red-50/50 dark:bg-red-950/30'
         )}
       >
         <CardContent className="p-3">
@@ -165,9 +165,9 @@ export function TaskCard({ task, isDragging }: TaskCardProps) {
             >
               <GripVertical className="h-4 w-4" />
             </button>
-            <div className="flex-1 space-y-2">
+            <div className="flex-1 space-y-2 min-w-0">
               <div className="flex items-start justify-between gap-2">
-                <h4 className="text-sm font-medium leading-tight line-clamp-2">
+                <h4 className="text-sm font-medium leading-tight break-words">
                   {task.title}
                 </h4>
                 <DropdownMenu>
@@ -219,7 +219,7 @@ export function TaskCard({ task, isDragging }: TaskCardProps) {
               </div>
 
               {task.description && (
-                <p className="text-xs text-muted-foreground line-clamp-2">
+                <p className="text-xs text-muted-foreground whitespace-pre-wrap">
                   {task.description}
                 </p>
               )}
@@ -246,7 +246,7 @@ export function TaskCard({ task, isDragging }: TaskCardProps) {
                         size="sm"
                         className={cn(
                           'h-5 px-1.5 text-[10px]',
-                          isOverdue && 'text-red-600 hover:text-red-700'
+                          isOverdue && 'text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300'
                         )}
                       >
                         {isOverdue ? (

@@ -33,11 +33,11 @@ export function KanbanBoard() {
   const { t } = useLanguage();
 
   const statusLabels: Record<TaskStatus, { label: string; color: string }> = {
-    OPEN: { label: t.open, color: 'bg-slate-100' },
-    PENDING: { label: t.pending, color: 'bg-amber-100' },
-    IN_PROGRESS: { label: t.inProgress, color: 'bg-blue-100' },
-    REVIEW: { label: t.review, color: 'bg-purple-100' },
-    COMPLETED: { label: t.completed, color: 'bg-green-100' },
+    OPEN: { label: t.open, color: 'bg-slate-100 dark:bg-slate-800' },
+    PENDING: { label: t.pending, color: 'bg-amber-100 dark:bg-amber-900/40' },
+    IN_PROGRESS: { label: t.inProgress, color: 'bg-blue-100 dark:bg-blue-900/40' },
+    REVIEW: { label: t.review, color: 'bg-purple-100 dark:bg-purple-900/40' },
+    COMPLETED: { label: t.completed, color: 'bg-green-100 dark:bg-green-900/40' },
   };
 
   const sensors = useSensors(
@@ -115,7 +115,7 @@ export function KanbanBoard() {
       onDragEnd={handleDragEnd}
     >
       <ScrollArea className="w-full whitespace-nowrap">
-        <div className="flex w-max gap-4 p-1">
+        <div className="flex w-max min-w-full justify-center gap-2 px-4 py-2">
           {COLUMNS.map((status) => (
             <SortableContext
               key={status}
