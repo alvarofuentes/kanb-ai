@@ -27,6 +27,12 @@
 
 ---
 
+- **Demo**: https://y16jj1x6aby1-d.space.z.ai
+
+- **⚠️ Esta es una demo visual. Para usar con IA, clona el repo y configura tus API keys.**
+
+---
+
 ## 📋 Requisitos
 
 - **Node.js** 18.0 o superior
