@@ -52,22 +52,22 @@ export function ProductivityDashboard() {
 
   const statusData = stats
     ? [
-        { name: t.open, value: stats.byStatus.open, fill: PIE_COLORS[0] },
-        { name: t.pending, value: stats.byStatus.pending, fill: PIE_COLORS[1] },
-        { name: t.inProgress, value: stats.byStatus.inProgress, fill: PIE_COLORS[2] },
-        { name: t.review, value: stats.byStatus.review, fill: PIE_COLORS[3] },
-        { name: t.completed, value: stats.byStatus.completed, fill: PIE_COLORS[4] },
-      ]
+      { name: t.open, value: stats.byStatus.open, fill: PIE_COLORS[0] },
+      { name: t.pending, value: stats.byStatus.pending, fill: PIE_COLORS[1] },
+      { name: t.inProgress, value: stats.byStatus.inProgress, fill: PIE_COLORS[2] },
+      { name: t.review, value: stats.byStatus.review, fill: PIE_COLORS[3] },
+      { name: t.completed, value: stats.byStatus.completed, fill: PIE_COLORS[4] },
+    ].filter((item) => item.value > 0)
     : [];
 
   const priorityLabels = [t.low, t.medium, t.high, t.urgent];
   const priorityData = stats
     ? [
-        { name: t.low, value: stats.byPriority.low, fill: PRIORITY_COLORS.low },
-        { name: t.medium, value: stats.byPriority.medium, fill: PRIORITY_COLORS.medium },
-        { name: t.high, value: stats.byPriority.high, fill: PRIORITY_COLORS.high },
-        { name: t.urgent, value: stats.byPriority.urgent, fill: PRIORITY_COLORS.urgent },
-      ]
+      { name: t.low, value: stats.byPriority.low, fill: PRIORITY_COLORS.low },
+      { name: t.medium, value: stats.byPriority.medium, fill: PRIORITY_COLORS.medium },
+      { name: t.high, value: stats.byPriority.high, fill: PRIORITY_COLORS.high },
+      { name: t.urgent, value: stats.byPriority.urgent, fill: PRIORITY_COLORS.urgent },
+    ]
     : [];
 
   const activityData = stats?.recentActivity || [];
