@@ -3,15 +3,32 @@ import { db } from '@/lib/db';
 import { TaskPriority } from '@prisma/client';
 import { createChatProvider, hasAIProvider, PROVIDER_CONFIGS } from '@/lib/ai-providers';
 import { ExtractedTask } from '@/lib/ai-providers/types';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/lib/auth';
+import { z } from 'zod';
+
+const extractTasksSchema = z.object({
+  transcription: z.string()
+    .min(1, "Transcription is required")
+    .max(10000, "Transcription is too long. Max 10,000 characters supported."),
+  language: z.string().max(10).optional(),
+  saveToDb: z.boolean().optional(),
+});
 
 // POST - Extract tasks from transcription using AI
 export async function POST(request: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
+    const sessionUserId = (session.user as any).id;
+
     // Check if AI provider is configured
     if (!hasAIProvider()) {
       return NextResponse.json(
-        { 
-          success: false, 
+        {
+          success: false,
           error: 'AI provider not configured',
           errorType: 'MISSING_API_KEY',
           hint: 'Please configure at least one AI provider in your .env file',
@@ -46,22 +63,27 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { transcription, language, userId, saveToDb } = body;
 
-    if (!transcription) {
+    // Validate payload limits
+    const parsedData = extractTasksSchema.safeParse(body);
+    if (!parsedData.success) {
       return NextResponse.json(
-        { success: false, error: 'Transcription is required' },
+        { success: false, error: 'Validation Error', details: parsedData.error.format() },
         { status: 400 }
       );
     }
 
+    // use sessionUserId instead of passed userId to ensure secure task creation
+    const { transcription, language, saveToDb } = parsedData.data;
+    const userId = sessionUserId;
+
     // Create chat provider (for task extraction)
     const result = createChatProvider();
-    
+
     if (!result) {
       return NextResponse.json(
-        { 
-          success: false, 
+        {
+          success: false,
           error: 'Failed to initialize AI provider',
           hint: 'Make sure you have at least one AI provider configured',
         },
@@ -92,11 +114,11 @@ export async function POST(request: NextRequest) {
 
     if (!extractionResult) {
       console.error('Task extraction failed after retries:', lastError);
-      
+
       // Provide helpful error messages
       let errorMessage = lastError?.message || 'Task extraction failed';
       let hint = '';
-      
+
       if (lastError?.message?.includes('Country, region, or territory not supported')) {
         errorMessage = 'Provider is not available in your region';
         hint = 'Try using DeepSeek or Ollama instead';
@@ -105,10 +127,10 @@ export async function POST(request: NextRequest) {
           hint = 'Run: ollama pull llama3.2 (or your preferred model)';
         }
       }
-      
+
       return NextResponse.json(
-        { 
-          success: false, 
+        {
+          success: false,
           error: errorMessage,
           hint,
           provider: type,
@@ -130,7 +152,7 @@ export async function POST(request: NextRequest) {
     }
 
     // If saveToDb is true, save the tasks to the database
-    const savedTasks = [];
+    const savedTasks: import('@prisma/client').Task[] = [];
     if (saveToDb && extractedTasks.length > 0) {
       for (const task of extractedTasks) {
         try {

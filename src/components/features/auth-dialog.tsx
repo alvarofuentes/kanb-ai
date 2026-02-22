@@ -59,12 +59,12 @@ export function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
     setError(null);
 
     if (registerPassword !== registerConfirmPassword) {
-      setError(t.password !== t.confirmPassword ? 'Passwords do not match' : 'Las contraseñas no coinciden');
+      setError(t.language === 'en' ? 'Passwords do not match' : 'Las contraseñas no coinciden');
       return;
     }
 
     if (registerPassword.length < 6) {
-      setError(t.password === 'Password' ? 'Password must be at least 6 characters' : 'La contraseña debe tener al menos 6 caracteres');
+      setError(t.language === 'en' ? 'Password must be at least 6 characters' : 'La contraseña debe tener al menos 6 caracteres');
       return;
     }
 

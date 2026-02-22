@@ -257,6 +257,6 @@ export const translations = {
     profile: 'Perfil',
     settings: 'Configuración',
   },
-} as const;
+};
 
-export type Translations = typeof translations.en;
+export type Translations = Record<keyof typeof translations.en, string>;

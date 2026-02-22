@@ -73,7 +73,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const value: AuthContextType = {
-    user: session?.user ? { id: session.user.id, name: session.user.name, email: session.user.email } : null,
+    user: session?.user ? { id: (session.user as any).id, name: session.user.name, email: session.user.email } : null,
     session,
     isLoading,
     isAuthenticated: !!session?.user,

@@ -23,7 +23,7 @@
 - **📊 Dashboard de productividad** - Visualiza tu progreso con gráficos
 - **🌙 Diseño Adaptativo y Modo Oscuro** - Interfaz fluida con contraste optimizado para la vista
 - **🌍 Multiidioma** - Interfaz en español e inglés
-- **🔐 Autenticación** - Sistema de usuarios seguro
+- **🔐 Autenticación y Seguridad Avanzada** - Sistema de usuarios seguro por NextAuth.js, con validación de datos estricta via `zod` y prevención IDOR / DoS integrada en la API.
 - **🔄 Múltiples proveedores de IA** - OpenAI, Groq, DeepSeek, Ollama
 
 ---
@@ -190,28 +190,33 @@ Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 
 ## 📦 Estructura del Proyecto
 
+Para una visión profunda del diseño, consulta la [Documentación de Arquitectura](ARCHITECTURE.md).
+Adicionalmente, los detalles sobre mitigaciones frente a vulnerabilidades y gestión de identidad de API se encuentran en el [Reporte de Seguridad](SECURITY.md).
+
 ```
 kanb-ai/
 ├── prisma/
 │   └── schema.prisma      # Esquema de base de datos
 ├── src/
 │   ├── app/               # Páginas y APIs (Next.js App Router)
-│   │   ├── api/           # Endpoints REST
-│   │   │   ├── transcribe/    # Transcripción de audio
-│   │   │   ├── ai/           # Extracción de tareas con IA
-│   │   │   ├── tasks/        # CRUD de tareas
-│   │   │   └── auth/         # Autenticación
+│   │   ├── api/           # Endpoints REST (Protegidos)
+│   │   │   ├── transcribe/    # Transcripción de audio con Zod validation
+│   │   │   ├── ai/           # Extracción de tareas con IA (Prompt sandboxing)
+│   │   │   ├── tasks/        # CRUD de tareas con Cero Confianza (No-IDOR)
+│   │   │   └── auth/         # Autenticación NextAuth JWT
 │   │   └── page.tsx       # Página principal
 │   ├── components/        # Componentes React
 │   │   ├── features/      # Componentes de funcionalidades
 │   │   └── ui/            # Componentes base (shadcn/ui)
 │   ├── context/           # Contextos de React
 │   ├── lib/               # Utilidades y configuración
-│   │   ├── ai-providers/  # OpenAI, Groq, DeepSeek, Ollama
+│   │   ├── ai-providers/  # Patrón de estrategia: OpenAI, Groq, DeepSeek, Ollama
 │   │   └── translations.ts # Traducciones ES/EN
 │   ├── store/             # Estado global (Zustand)
 │   └── types/             # Tipos TypeScript
 ├── db/                    # Base de datos SQLite
+├── ARCHITECTURE.md        # Especificación Técnica de Componentes
+├── SECURITY.md            # Documentación de Endpoints y Sandbox
 ├── .env.example           # Variables de entorno (template)
 └── README.md
 ```

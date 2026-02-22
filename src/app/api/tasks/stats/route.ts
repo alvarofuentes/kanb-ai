@@ -1,12 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { TaskStatus } from '@prisma/client';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/lib/auth';
 
 // GET - Get task statistics for dashboard
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
-    const userId = searchParams.get('userId') || 'default-user';
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
+    const userId = (session.user as any).id;
 
     // Get all tasks for the user
     const tasks = await db.task.findMany({
@@ -32,10 +37,10 @@ export async function GET(request: NextRequest) {
       completionRate:
         tasks.length > 0
           ? Math.round(
-              (tasks.filter((t) => t.status === TaskStatus.COMPLETED).length /
-                tasks.length) *
-                100
-            )
+            (tasks.filter((t) => t.status === TaskStatus.COMPLETED).length /
+              tasks.length) *
+            100
+          )
           : 0,
       overdue: tasks.filter(
         (t) =>

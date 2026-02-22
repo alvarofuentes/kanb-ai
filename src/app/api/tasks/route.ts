@@ -1,12 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { TaskStatus, TaskPriority } from '@prisma/client';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/lib/auth';
+import { z } from 'zod';
+
+const taskSchema = z.object({
+  title: z.string().min(1, "Title is required").max(255, "Title is too long"),
+  description: z.string().max(2000, "Description is too long").nullable().optional(),
+  status: z.nativeEnum(TaskStatus).optional(),
+  priority: z.nativeEnum(TaskPriority).optional(),
+  dueDate: z.string().nullable().optional(),
+  tags: z.array(z.string().max(50)).max(20).nullable().optional(),
+});
+
+const updateTaskSchema = taskSchema.partial().extend({
+  id: z.string().min(1, "Task ID is required"),
+});
 
 // GET - Fetch all tasks for a user
 export async function GET(request: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
+
     const { searchParams } = new URL(request.url);
-    const userId = searchParams.get('userId') || 'default-user';
+    const userId = (session.user as any).id;
     const status = searchParams.get('status') as TaskStatus | null;
     const priority = searchParams.get('priority') as TaskPriority | null;
 
@@ -32,15 +53,23 @@ export async function GET(request: NextRequest) {
 // POST - Create a new task
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { title, description, status, priority, dueDate, tags, userId } = body;
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
+    const userId = (session.user as any).id;
 
-    if (!title) {
+    const body = await request.json();
+    const parsedData = taskSchema.safeParse(body);
+
+    if (!parsedData.success) {
       return NextResponse.json(
-        { success: false, error: 'Title is required' },
+        { success: false, error: 'Validation Error', details: parsedData.error.format() },
         { status: 400 }
       );
     }
+
+    const { title, description, status, priority, dueDate, tags } = parsedData.data;
 
     const task = await db.task.create({
       data: {
@@ -50,7 +79,7 @@ export async function POST(request: NextRequest) {
         priority: priority || TaskPriority.MEDIUM,
         dueDate: dueDate ? new Date(dueDate) : null,
         tags: tags ? JSON.stringify(tags) : null,
-        userId: userId || 'default-user',
+        userId: userId,
       },
     });
 
@@ -67,8 +96,23 @@ export async function POST(request: NextRequest) {
 // PUT - Update a task
 export async function PUT(request: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
+    const userId = (session.user as any).id;
+
     const body = await request.json();
-    const { id, title, description, status, priority, dueDate, tags } = body;
+    const parsedData = updateTaskSchema.safeParse(body);
+
+    if (!parsedData.success) {
+      return NextResponse.json(
+        { success: false, error: 'Validation Error', details: parsedData.error.format() },
+        { status: 400 }
+      );
+    }
+
+    const { id, title, description, status, priority, dueDate, tags } = parsedData.data;
 
     if (!id) {
       return NextResponse.json(
@@ -84,6 +128,14 @@ export async function PUT(request: NextRequest) {
     if (priority !== undefined) updateData.priority = priority;
     if (dueDate !== undefined) updateData.dueDate = dueDate ? new Date(dueDate) : null;
     if (tags !== undefined) updateData.tags = tags ? JSON.stringify(tags) : null;
+
+    const existingTask = await db.task.findUnique({ where: { id } });
+    if (!existingTask || existingTask.userId !== userId) {
+      return NextResponse.json(
+        { success: false, error: 'Task not found or unauthorized' },
+        { status: 404 }
+      );
+    }
 
     const task = await db.task.update({
       where: { id },
@@ -103,6 +155,12 @@ export async function PUT(request: NextRequest) {
 // DELETE - Delete a task
 export async function DELETE(request: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
+    const userId = (session.user as any).id;
+
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
 
@@ -110,6 +168,14 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json(
         { success: false, error: 'Task ID is required' },
         { status: 400 }
+      );
+    }
+
+    const existingTask = await db.task.findUnique({ where: { id } });
+    if (!existingTask || existingTask.userId !== userId) {
+      return NextResponse.json(
+        { success: false, error: 'Task not found or unauthorized' },
+        { status: 404 }
       );
     }
 

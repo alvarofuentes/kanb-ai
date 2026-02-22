@@ -8,10 +8,26 @@ import {
   getConfiguredProviders,
   PROVIDER_CONFIGS
 } from '@/lib/ai-providers';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/lib/auth';
+import { z } from 'zod';
+
+// Approx 5MB of audio results in ~7MB base64 string. We limit to 7MB base64.
+const transcribeSchema = z.object({
+  audioBase64: z.string()
+    .min(100, "Audio data is too short")
+    .max(7 * 1024 * 1024, "Audio file is too large (max ~5MB)"),
+  language: z.string().max(10).optional(),
+});
 
 // POST - Transcribe audio to text
 export async function POST(request: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
+
     // Check if transcription provider is configured
     if (!hasTranscriptionProvider()) {
       return NextResponse.json(
@@ -60,22 +76,16 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { audioBase64, language } = body;
+    const parsedData = transcribeSchema.safeParse(body);
 
-    if (!audioBase64) {
+    if (!parsedData.success) {
       return NextResponse.json(
-        { success: false, error: 'Audio data is required' },
+        { success: false, error: 'Validation Error', details: parsedData.error.format() },
         { status: 400 }
       );
     }
 
-    // Validate base64 data
-    if (typeof audioBase64 !== 'string' || audioBase64.length < 100) {
-      return NextResponse.json(
-        { success: false, error: 'Audio data is too short or invalid' },
-        { status: 400 }
-      );
-    }
+    const { audioBase64, language } = parsedData.data;
 
     // Create transcription provider
     const result = createTranscriptionProvider();
